@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 appsettings.Development.json
 Test.IdentityServer.db
+*.sqlite

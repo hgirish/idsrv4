@@ -1,6 +1,7 @@
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,129 +22,95 @@ namespace IdSrv4
             foreach (var x in apiResources) {
                 AddApiResource(x);
             }
-            var findIdentityResource = _configurationDbContext.IdentityResources.SingleOrDefault(
-                x => x.Name == "role");
-            if (findIdentityResource == null)
-            {
-                var roleResource = new IdentityServer4.EntityFramework.Entities.IdentityResource
-                {
-                    Name = "role",
-                    UserClaims = new List<IdentityClaim>
-                    {
-                        new IdentityClaim
-                        {
-                            Type = "role"
-                        }
-                    }
-                };
-                _configurationDbContext.IdentityResources.Add(roleResource);
+
+            var identityResources = Resources.GetIdentityResources();
+            foreach (var item in identityResources) {
+                AddIdentityResource(item);
             }
-            AddResouce("profile");
-            AddResouce("openid");
-            AddResouce("email");
 
-            var findClients = _configurationDbContext.Clients.SingleOrDefault(c =>
-            c.ClientId == "openIdConnectClient");
+            var clients = Clients.Get();
+            foreach (var client in clients) {
+                AddClient(client);
+            }  
+        }
 
-            if (findClients == null)
-            {
-                IdentityServer4.EntityFramework.Entities.Client entity =
-                    new IdentityServer4.EntityFramework.Entities.Client();
-                entity.ClientId = "openIdConnectClient";
-                entity.ClientName = "Example Implicit Client Application";
-                entity.AllowedScopes = new List<ClientScope>()
-                {
-                    new ClientScope
-                    {
-                       Scope = "openid"
-                    },
-                    new ClientScope
-                    {
-                        Scope="profile"
-                    },
-                    new ClientScope
-                    {
-                        Scope="email"
-                    },
-                    new ClientScope
-                    {
-                        Scope="role"
-                    },
-                    new ClientScope
-                    {
-                        Scope="customAPI.write"
-                    }
-
+        private void AddClient(IdentityServer4.Models.Client model)
+        {
+         if(_configurationDbContext.Clients.SingleOrDefault(
+             c=>c.ClientId == model.ClientId) == null) {
+                var entity = new IdentityServer4.EntityFramework.Entities.Client {
+                    ClientName = model.ClientName,
+                    ClientId = model.ClientId
                 };
-                entity.RedirectUris = new List<IdentityServer4.EntityFramework.Entities.ClientRedirectUri>
-                {
-                    new IdentityServer4.EntityFramework.Entities.ClientRedirectUri
-                    {
-                        RedirectUri = "https://localhost:44330/signin-oidc"
+                foreach (var grant in model.AllowedGrantTypes) {
+                    if (entity.AllowedGrantTypes == null) {
+                        entity.AllowedGrantTypes = new List<ClientGrantType>();
                     }
-                };
-                entity.PostLogoutRedirectUris = new List<IdentityServer4.EntityFramework.Entities.ClientPostLogoutRedirectUri>
-                {
-                    new IdentityServer4.EntityFramework.Entities.ClientPostLogoutRedirectUri
-                    {
-                        PostLogoutRedirectUri = "https://localhost:44330"
+                    entity.AllowedGrantTypes.Add(new ClientGrantType {
+                        GrantType = grant
+                    });
+                }
+                foreach (var secret in model.ClientSecrets) {
+                    if (entity.ClientSecrets == null) {
+                        entity.ClientSecrets = new List<ClientSecret>();
                     }
-                };
-                entity.AllowedGrantTypes = new List<IdentityServer4.EntityFramework.Entities.ClientGrantType>
-                {
-                    new ClientGrantType
-                    {
-                        GrantType = "implicit"
+                    entity.ClientSecrets.Add(new ClientSecret {
+                        Value = secret.Value
+                    });
+                }
+                foreach (var scope in model.AllowedScopes) {
+                    if (entity.AllowedScopes == null) {
+                        entity.AllowedScopes = new List<ClientScope>();
                     }
-                };
-
-
+                    entity.AllowedScopes.Add(new ClientScope {
+                        Scope = scope
+                    });
+                }
+                foreach (var redirectUrl in model.RedirectUris) {
+                    if (entity.RedirectUris == null) {
+                        entity.RedirectUris = new List<ClientRedirectUri>();
+                    }
+                    entity.RedirectUris.Add(new ClientRedirectUri {
+                        RedirectUri = redirectUrl
+                    });
+                }
+                foreach (var postRedirectUri in model.PostLogoutRedirectUris) {
+                    if (entity.PostLogoutRedirectUris == null) {
+                        entity.PostLogoutRedirectUris = new List<ClientPostLogoutRedirectUri>();
+                    }
+                    entity.PostLogoutRedirectUris.Add(new ClientPostLogoutRedirectUri {
+                        PostLogoutRedirectUri = postRedirectUri
+                    });
+                }
 
                 _configurationDbContext.Clients.Add(entity);
-
                 _configurationDbContext.SaveChanges();
+            } 
+        }
 
-                // var client2 = clients.FirstOrDefault(x => x.ClientId == "oauthClient");
+        private void AddIdentityResource(IdentityServer4.Models.IdentityResource model)
+        {
+            if (_configurationDbContext.IdentityResources.SingleOrDefault(
+                x=>x.Name == model.Name)==null) {
 
+                var identityResource = new IdentityServer4.EntityFramework.Entities.IdentityResource {
+                    Name = model.Name
 
-
-            }
-            var findClient2 = _configurationDbContext.Clients
-                 .SingleOrDefault(c => c.ClientId == "oauthClient");
-            if (findClient2 == null)
-            {
-                IdentityServer4.EntityFramework.Entities.Client entity2 =
-                    new IdentityServer4.EntityFramework.Entities.Client();
-                entity2.ClientId = "oauthClient";
-                entity2.ClientName = "Example Client Credentials Client Application";
-                entity2.AllowedGrantTypes = new List<ClientGrantType>
-                    {
-                        new ClientGrantType
-                        {
-                            GrantType = "client_credentials"
-                        }
-                    };
-                entity2.ClientSecrets = new List<ClientSecret>
-                    {
-                       new ClientSecret
-                       {
-                           Value = "superSecretPassword".Sha256()
-                       }
-                    };
-                entity2.AllowedScopes = new List<ClientScope>
-                    {
-                        new ClientScope
-                        {
-                            Scope = "customAPI.read"
-                        }
-                    };
-
-                _configurationDbContext.Add(entity2);
+                };
+                foreach (var item in model.UserClaims) {
+                    if (identityResource.UserClaims == null) {
+                        identityResource.UserClaims = new List<IdentityClaim>();
+                    }
+                    identityResource.UserClaims.Add(new IdentityClaim {
+                        Type = item
+                    });
+                }
+                _configurationDbContext.IdentityResources.Add(identityResource);
                 _configurationDbContext.SaveChanges();
-
 
             }
         }
+
         private void AddApiResource(IdentityServer4.Models.ApiResource model)
         {
             if (_configurationDbContext.ApiResources.SingleOrDefault(x=>x.Name == model.Name) == null) {
@@ -154,16 +121,25 @@ namespace IdSrv4
 
                 };
                 foreach (var claim in model.UserClaims) {
+                    if (apiResource.UserClaims == null) {
+                        apiResource.UserClaims = new List<ApiResourceClaim>();
+                    }
                     apiResource.UserClaims.Add(new ApiResourceClaim {
                         Type = claim
                     });
                 }
                 foreach (var secret in model.ApiSecrets) {
+                    if (apiResource.Secrets == null) {
+                        apiResource.Secrets = new List<ApiSecret>();
+                    }
                     apiResource.Secrets.Add(new ApiSecret {
                         Value = secret.Value
                     });
                 }
                 foreach (var scope in model.Scopes) {
+                    if (apiResource.Scopes == null) {
+                        apiResource.Scopes = new List<ApiScope>();
+                    }
                     apiResource.Scopes.Add(new ApiScope {
                         Name = scope.Name
                     });
