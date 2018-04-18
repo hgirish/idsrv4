@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdSrv4
@@ -16,12 +19,30 @@ namespace IdSrv4
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            //const string connectionString =
+            //    @"Data Source=(LocalDb)\MSSQLLocalDB;database=Test.IdentityServer4.EntityFramework;trusted_connection=yes;";
+            const string connectionString = "Data Source=Test.IdentityServer.db";
+            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+            services.AddDbContext<ApplicationDbContext>(builder =>        
+            builder.UseSqlite(connectionString, sqloptions => sqloptions.MigrationsAssembly(migrationAssembly)));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddIdentityServer()
-                .AddInMemoryClients(Clients.Get())
-                .AddInMemoryIdentityResources(Resources.GetIdentityResources())
-                .AddInMemoryApiResources(Resources.GetApiResources())
-                .AddTestUsers(Users.Get())
-                .AddDeveloperSigningCredential();
+                .AddConfigurationStore(options =>
+                options.ConfigureDbContext = builder =>
+                 builder.UseSqlite(connectionString, sqlOptions =>
+                 sqlOptions.MigrationsAssembly(migrationAssembly)))
+                .AddAspNetIdentity<IdentityUser>()
+                .AddDeveloperSigningCredential()
+                .AddOperationalStore(options =>
+                options.ConfigureDbContext = builder =>
+                builder.UseSqlite(connectionString,
+                sqlOptions => sqlOptions.MigrationsAssembly(migrationAssembly)));
+
+
 
             services.AddMvc();
         }
