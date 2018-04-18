@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,8 +33,9 @@ namespace IdSrv4
                 var services = scope.ServiceProvider;
 
                 var configurationDbContext = services.GetRequiredService<ConfigurationDbContext>();
+                var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
-                var intializer = new DbInitializer(configurationDbContext);
+                var intializer = new DbInitializer(services);
                 try {
                     intializer.InitializeData();
                 }

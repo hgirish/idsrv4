@@ -23,7 +23,7 @@ namespace IdSrv4
         {
             //const string connectionString =
             //    @"Data Source=(LocalDb)\MSSQLLocalDB;database=Test.IdentityServer4.EntityFramework;trusted_connection=yes;";
-            const string connectionString = "Data Source=..\\DB\\Test.IdentityServer.sqlite";
+            const string connectionString = "Data Source=..\\DB\\Test.IdentityServer.db";
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddDbContext<ApplicationDbContext>(builder =>        
@@ -44,8 +44,7 @@ namespace IdSrv4
                 builder.UseSqlite(connectionString,
                 sqlOptions => sqlOptions.MigrationsAssembly(migrationAssembly)));
 
-
-
+            
             services.AddMvc();
         }
 
