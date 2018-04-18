@@ -1,4 +1,4 @@
-﻿using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.Models;
 using System.Collections.Generic;
@@ -17,6 +17,10 @@ namespace IdSrv4
 
         public void  InitializeData()
         {
+            var apiResources = Resources.GetApiResources();
+            foreach (var x in apiResources) {
+                AddApiResource(x);
+            }
             var findIdentityResource = _configurationDbContext.IdentityResources.SingleOrDefault(
                 x => x.Name == "role");
             if (findIdentityResource == null)
@@ -140,7 +144,34 @@ namespace IdSrv4
 
             }
         }
+        private void AddApiResource(IdentityServer4.Models.ApiResource model)
+        {
+            if (_configurationDbContext.ApiResources.SingleOrDefault(x=>x.Name == model.Name) == null) {
+                var apiResource = new IdentityServer4.EntityFramework.Entities.ApiResource {
+                    Name = model.Name,
+                    Description = model.Description,
+                    DisplayName = model.DisplayName
 
+                };
+                foreach (var claim in model.UserClaims) {
+                    apiResource.UserClaims.Add(new ApiResourceClaim {
+                        Type = claim
+                    });
+                }
+                foreach (var secret in model.ApiSecrets) {
+                    apiResource.Secrets.Add(new ApiSecret {
+                        Value = secret.Value
+                    });
+                }
+                foreach (var scope in model.Scopes) {
+                    apiResource.Scopes.Add(new ApiScope {
+                        Name = scope.Name
+                    });
+                }
+                _configurationDbContext.ApiResources.Add(apiResource);
+                _configurationDbContext.SaveChanges();
+            }
+        }
         private void AddResouce(string resouceName)
         {
             if (_configurationDbContext.IdentityResources.SingleOrDefault(x => x.Name == resouceName) == null)
