@@ -17,14 +17,19 @@ export class CallApiComponent implements OnInit {
       Authorization: this.authService.getAuthorizationHeaderValue()
     });
     // const options = new RequestOptions({ headers: header });
-    this.http.get('http://localhost:44350/api', { headers: header }).subscribe(
-      response => {
-        console.log(response);
-        this.response = response;
-      },
-      err => {
-        console.error(err);
-      }
-    );
+    this.http
+      .get('https://localhost:44350/api', {
+        headers: header,
+        responseType: 'text'
+      })
+      .subscribe(
+        response => {
+          console.log(response);
+          this.response = response;
+        },
+        err => {
+          console.error(err);
+        }
+      );
   }
 }

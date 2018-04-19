@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using IdentityServer4.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,11 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using IdentityServer4.Models;
-using IdentityServer4.AccessTokenValidation;
 
-namespace IdSrv4
-{
+namespace IdSrv4 {
     public class Startup
     {
         // This method gets called by the runtime. Use this method to add services to the container.
