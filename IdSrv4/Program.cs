@@ -23,7 +23,7 @@ namespace IdSrv4
           .MinimumLevel.Warning()
           .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
           .Enrich.FromLogContext()
-          .WriteTo.File("../../LogFiles/idsrv4.log", fileSizeLimitBytes: 1 * 1024 * 1024)
+          .WriteTo.File("../../LogFiles/idsrv4.log", fileSizeLimitBytes: 1 * 1024 * 1024, rollingInterval:RollingInterval.Day,retainedFileCountLimit:3,rollOnFileSizeLimit:true)
           .CreateLogger();
 
             var host = BuildWebHost(args);

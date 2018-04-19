@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using IdentityServer4.Models;
+using IdentityServer4.AccessTokenValidation;
 
 namespace IdSrv4
 {
@@ -57,6 +59,15 @@ namespace IdSrv4
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.Map("/api", api =>
+            {
+                api.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+              
+                api.Run(async context =>
+                {
+                    await context.Response.WriteAsync("API Response");
+                });
+            });
             app.UseIdentityServer();
 
             app.UseStaticFiles();

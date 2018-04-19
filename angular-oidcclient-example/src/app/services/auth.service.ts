@@ -49,6 +49,8 @@ export function getClientSettings(): UserManagerSettings {
     scope: 'openid profile api1',
     filterProtocolClaims: true,
     loadUserInfo: true,
-    userStore: new WebStorageStateStore({ store: window.localStorage })
+    automaticSilentRenew: true,
+    silent_redirect_uri: 'http://localhost:4200/silent-refresh.html'
+    // userStore: new WebStorageStateStore({ store: window.localStorage })
   };
 }
