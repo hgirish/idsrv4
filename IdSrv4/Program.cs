@@ -37,7 +37,7 @@ namespace IdSrv4
 
                 var intializer = new DbInitializer(services);
                 try {
-                    intializer.InitializeData();
+                    intializer.InitializeDataAsync();
                 }
                 catch (Exception ex) {
 

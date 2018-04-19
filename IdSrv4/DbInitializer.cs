@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IdSrv4
 {
@@ -24,172 +25,93 @@ namespace IdSrv4
             _services = services;
         }
 
-        public void  InitializeData()
+        public async Task InitializeDataAsync()
         {
-            //_services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-            //_configurationDbContext.Database.Migrate();
-            //_services.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+            
 
-            var clients = Clients.Get();
-            foreach (var client in clients) {
-                //AddClient(client);
-                _configurationDbContext.Clients.Add(client.ToEntity());
-            }
-            _configurationDbContext.SaveChanges();
+            InsertClients();
 
-            var identityResources = Resources.GetIdentityResources();
-            foreach (var identityResource in identityResources) {
-                // AddIdentityResource(identityResource);
-                _configurationDbContext.IdentityResources.Add(identityResource.ToEntity());
-            }
-            _configurationDbContext.SaveChanges();
+            InsertIdentityResources();
 
-            var apiResources = Resources.GetApiResources();
-            foreach (var apiResource in apiResources) {
-                // AddApiResource(apiResource);
-                _configurationDbContext.ApiResources.Add(apiResource.ToEntity());
-            }
-            _configurationDbContext.SaveChanges();
+            InsertApiResources();
 
+            await InsertUsers();
+
+        }
+
+    
+
+        private async Task InsertUsers()
+        {
             var users = Users.Get();
-            foreach (var user in users) {
-                var identityUser = new IdentityUser(user.Username) {
-                    Id = user.SubjectId
-                };
-                _userManager.CreateAsync(identityUser, user.Password).Wait();
-                _userManager.AddClaimsAsync(identityUser, user.Claims.ToList()).Wait();
-            }
-           // _configurationDbContext.SaveChanges();
-
-
-        }
-
-        private void AddClient(IdentityServer4.Models.Client model)
-        {
-         if(_configurationDbContext.Clients.SingleOrDefault(
-             c=>c.ClientId == model.ClientId) == null) {
-                var clientEntity = model.ToEntity();
-                var entity = new IdentityServer4.EntityFramework.Entities.Client {
-                    ClientName = model.ClientName,
-                    ClientId = model.ClientId
-                };
-                foreach (var grant in model.AllowedGrantTypes) {
-                    if (entity.AllowedGrantTypes == null) {
-                        entity.AllowedGrantTypes = new List<ClientGrantType>();
-                    }
-                    entity.AllowedGrantTypes.Add(new ClientGrantType {
-                        GrantType = grant
-                    });
-                }
-                foreach (var secret in model.ClientSecrets) {
-                    if (entity.ClientSecrets == null) {
-                        entity.ClientSecrets = new List<ClientSecret>();
-                    }
-                    entity.ClientSecrets.Add(new ClientSecret {
-                        Value = secret.Value
-                    });
-                }
-                foreach (var scope in model.AllowedScopes) {
-                    if (entity.AllowedScopes == null) {
-                        entity.AllowedScopes = new List<ClientScope>();
-                    }
-                    entity.AllowedScopes.Add(new ClientScope {
-                        Scope = scope
-                    });
-                }
-                foreach (var redirectUrl in model.RedirectUris) {
-                    if (entity.RedirectUris == null) {
-                        entity.RedirectUris = new List<ClientRedirectUri>();
-                    }
-                    entity.RedirectUris.Add(new ClientRedirectUri {
-                        RedirectUri = redirectUrl
-                    });
-                }
-                foreach (var postRedirectUri in model.PostLogoutRedirectUris) {
-                    if (entity.PostLogoutRedirectUris == null) {
-                        entity.PostLogoutRedirectUris = new List<ClientPostLogoutRedirectUri>();
-                    }
-                    entity.PostLogoutRedirectUris.Add(new ClientPostLogoutRedirectUri {
-                        PostLogoutRedirectUri = postRedirectUri
-                    });
-                }
-
-                _configurationDbContext.Clients.Add(entity);
-                _configurationDbContext.SaveChanges();
-            } 
-        }
-
-        private void AddIdentityResource(IdentityServer4.Models.IdentityResource model)
-        {
-            if (_configurationDbContext.IdentityResources.SingleOrDefault(
-                x=>x.Name == model.Name)==null) {
-
-                var identityResource = new IdentityServer4.EntityFramework.Entities.IdentityResource {
-                    Name = model.Name
-
-                };
-                foreach (var item in model.UserClaims) {
-                    if (identityResource.UserClaims == null) {
-                        identityResource.UserClaims = new List<IdentityClaim>();
-                    }
-                    identityResource.UserClaims.Add(new IdentityClaim {
-                        Type = item
-                    });
-                }
-                _configurationDbContext.IdentityResources.Add(identityResource);
-                _configurationDbContext.SaveChanges();
-
-            }
-        }
-
-        private void AddApiResource(IdentityServer4.Models.ApiResource model)
-        {
-            if (_configurationDbContext.ApiResources.SingleOrDefault(x=>x.Name == model.Name) == null) {
-                var apiResource = new IdentityServer4.EntityFramework.Entities.ApiResource {
-                    Name = model.Name,
-                    Description = model.Description,
-                    DisplayName = model.DisplayName
-
-                };
-                foreach (var claim in model.UserClaims) {
-                    if (apiResource.UserClaims == null) {
-                        apiResource.UserClaims = new List<ApiResourceClaim>();
-                    }
-                    apiResource.UserClaims.Add(new ApiResourceClaim {
-                        Type = claim
-                    });
-                }
-                foreach (var secret in model.ApiSecrets) {
-                    if (apiResource.Secrets == null) {
-                        apiResource.Secrets = new List<ApiSecret>();
-                    }
-                    apiResource.Secrets.Add(new ApiSecret {
-                        Value = secret.Value
-                    });
-                }
-                foreach (var scope in model.Scopes) {
-                    if (apiResource.Scopes == null) {
-                        apiResource.Scopes = new List<ApiScope>();
-                    }
-                    apiResource.Scopes.Add(new ApiScope {
-                        Name = scope.Name
-                    });
-                }
-                _configurationDbContext.ApiResources.Add(apiResource);
-                _configurationDbContext.SaveChanges();
-            }
-        }
-        private void AddResouce(string resouceName)
-        {
-            if (_configurationDbContext.IdentityResources.SingleOrDefault(x => x.Name == resouceName) == null)
+            foreach (var user in users)
             {
-                var profileResouce = new IdentityServer4.EntityFramework.Entities.IdentityResource
+                var exists = await _userManager.FindByNameAsync(user.Username);
+                if (exists == null)
                 {
-                    Name = resouceName
-                };
-                _configurationDbContext.IdentityResources.Add(profileResouce);
-                _configurationDbContext.SaveChanges();
+
+
+                    var identityUser = new IdentityUser(user.Username)
+                    {
+                        Id = user.SubjectId
+                    };
+                    await _userManager.CreateAsync(identityUser, user.Password);
+                    await _userManager.AddClaimsAsync(identityUser, user.Claims.ToList());
+                }
             }
         }
+
+        private void InsertApiResources()
+        {
+            var apiResources = Resources.GetApiResources();
+            foreach (var apiResource in apiResources)
+            {
+                if (!_configurationDbContext.ApiResources.Any(x => x.Name == apiResource.Name))
+                {
+                    _configurationDbContext.ApiResources.Add(apiResource.ToEntity());
+                }
+
+            }
+            _configurationDbContext.SaveChanges();
+        }
+
+        private void InsertIdentityResources()
+        {
+            var identityResources = Resources.GetIdentityResources();
+            foreach (var identityResource in identityResources)
+            {
+                if (_configurationDbContext.IdentityResources.SingleOrDefault(
+                    i => i.Name == identityResource.Name) == null)
+                {
+                    _configurationDbContext.IdentityResources.Add(identityResource.ToEntity());
+                }
+            }
+            _configurationDbContext.SaveChanges();
+        }
+
+        private void InsertClients()
+        {
+            var clients = Clients.Get();
+            foreach (var client in clients)
+            {
+                if (_configurationDbContext.Clients.SingleOrDefault(
+                    c => c.ClientId == client.ClientId) == null)
+                {
+                    _configurationDbContext.Clients.Add(client.ToEntity());
+                }
+            }
+            _configurationDbContext.SaveChanges();
+        }
+
+        private void Migrate()
+        {
+            _services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+            _configurationDbContext.Database.Migrate();
+            _services.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+        }
+
+
+
+
     }
 }

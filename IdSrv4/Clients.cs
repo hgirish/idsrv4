@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.Models;
 
@@ -34,6 +31,17 @@ namespace IdSrv4
                     },
                     RedirectUris = new List<string>{"https://localhost:44330/signin-oidc"},
                     PostLogoutRedirectUris = new List<string>{"https://localhost:44330"}
+                },
+                new Client
+                {
+                    ClientId = "angular-spa",
+                    ClientName = "Angular 5 Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedScopes = new List<string>{"openid","profile","api1"},
+                    RedirectUris = new List<string>{"http://localhost:4200/auth-callback"},
+                    PostLogoutRedirectUris = new List<string>{"http://localhost:4200/"},
+                    AllowedCorsOrigins = new List<string>{"http://localhost:4200"},
+                    AllowAccessTokensViaBrowser = true
                 }
             };
     }

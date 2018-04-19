@@ -31,8 +31,10 @@ namespace IdSrv4
                     Scopes = new List<Scope> {
                         new Scope("customAPI.read"),
                         new Scope("customAPI.write")
+
                     }
-                }
+                },
+                new ApiResource("api1","My API #1")
             };
         }
     }
