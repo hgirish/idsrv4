@@ -42,6 +42,17 @@ namespace IdSrv4
                     PostLogoutRedirectUris = new List<string>{"http://localhost:4200/"},
                     AllowedCorsOrigins = new List<string>{"http://localhost:4200"},
                     AllowAccessTokensViaBrowser = true
+                },
+                new Client {
+                    ClientId = "mean-rsvp",
+                    ClientName = "Angular Mean RSVP spa",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedScopes = new[] {"openid", "profile"},
+                    RedirectUris = new[]{ "http://localhost:4200/callback" },
+                    PostLogoutRedirectUris = new[]{"http://localhost:4200/"},
+                    AllowedCorsOrigins = new[]{"http://localhost:4200"},
+                    AllowAccessTokensViaBrowser = true
+
                 }
             };
     }

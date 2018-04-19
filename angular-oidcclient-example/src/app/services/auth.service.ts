@@ -50,6 +50,7 @@ export function getClientSettings(): UserManagerSettings {
     filterProtocolClaims: true,
     loadUserInfo: true,
     automaticSilentRenew: true,
+    monitorSession: true,
     silent_redirect_uri: 'http://localhost:4200/silent-refresh.html'
     // userStore: new WebStorageStateStore({ store: window.localStorage })
   };
