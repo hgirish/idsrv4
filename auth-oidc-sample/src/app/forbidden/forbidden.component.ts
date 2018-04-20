@@ -6,10 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./forbidden.component.scss']
 })
 export class ForbiddenComponent implements OnInit {
+  public message: string;
+  public values: any[];
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    this.message = 'ForbiddenComponent constructor';
   }
 
+  ngOnInit() {}
 }

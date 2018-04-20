@@ -6,15 +6,15 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 const routes: Routes = [
-  {path:'', component:HomeComponent},
-  {path: 'home', component: HomeComponent},
-  {path: 'autologin', component: AutoLoginComponent},
-  {path: 'Forbidden', component: ForbiddenComponent},
-  {path: 'Unauthorized', component: UnauthorizedComponent}
+  { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'autologin', component: AutoLoginComponent },
+  { path: 'Forbidden', component: ForbiddenComponent },
+  { path: 'Unauthorized', component: UnauthorizedComponent }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

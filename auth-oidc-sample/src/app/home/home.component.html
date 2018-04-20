@@ -1,3 +1,8 @@
-<p>
-  home works!
-</p>
+<div>Welcome</div>
+
+<div *ngIf="isAuthorized">
+  <p>Name:</p>
+  <p>{{name}}</p>
+  <p>Email</p>
+  <p>{{email}}</p>
+</div>

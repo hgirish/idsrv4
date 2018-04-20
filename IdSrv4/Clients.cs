@@ -53,6 +53,18 @@ namespace IdSrv4
                     AllowedCorsOrigins = new[]{"http://localhost:4200"},
                     AllowAccessTokensViaBrowser = true
 
+                },
+                new Client
+                {
+                    ClientId = "auth-oidc-sample",
+                    ClientName = "Angular Auth Oidc Sample",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                     AllowedScopes = new[] {"openid", "email", "profile"},
+                    RedirectUris = new[]{ "http://localhost:4200" },
+                    PostLogoutRedirectUris = new[]{"http://localhost:4200/Unauthorized"},
+                    AllowedCorsOrigins = new[]{"http://localhost:4200"},
+                    AllowAccessTokensViaBrowser = true,
+                    
                 }
             };
     }

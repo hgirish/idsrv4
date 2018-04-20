@@ -6,10 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./unauthorized.component.scss']
 })
 export class UnauthorizedComponent implements OnInit {
+  public message: string;
+  public values: any[];
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    this.message = 'UnauthorizedComponent constructor';
   }
 
+  ngOnInit() {}
 }

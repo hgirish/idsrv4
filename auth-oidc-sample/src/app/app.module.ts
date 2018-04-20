@@ -19,6 +19,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { AutoLoginComponent } from './auto-login/auto-login.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { Configuration } from './app.constants';
+import { NavigationComponent } from './navigation/navigation.component';
 
 export function loadConfig(oidcConfigService: OidcConfigService) {
   console.log('APP_INITIALIZER STARTING');
@@ -31,7 +32,8 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
     HomeComponent,
     UnauthorizedComponent,
     AutoLoginComponent,
-    ForbiddenComponent
+    ForbiddenComponent,
+    NavigationComponent
   ],
   imports: [
     BrowserModule,
@@ -59,16 +61,16 @@ export class AppModule {
     private oidcConfigService: OidcConfigService
   ) {
     this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
-      let openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
+      const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
 
       openIDImplicitFlowConfiguration.stsServer = 'https://localhost:44350';
-      openIDImplicitFlowConfiguration.redirect_url = 'https://localhost:44386';
+      openIDImplicitFlowConfiguration.redirect_url = 'http://localhost:4200';
       openIDImplicitFlowConfiguration.client_id = 'auth-oidc-sample';
       openIDImplicitFlowConfiguration.response_type = 'id_token token';
       openIDImplicitFlowConfiguration.scope = 'openid email profile';
       openIDImplicitFlowConfiguration.post_login_route = '/home';
       openIDImplicitFlowConfiguration.post_logout_redirect_uri =
-        'https://localhost:44386/Unauthorized';
+        'http://localhost:4200/Unauthorized';
       openIDImplicitFlowConfiguration.forbidden_route = '/Forbidden';
       openIDImplicitFlowConfiguration.unauthorized_route = '/Unauthorized';
       openIDImplicitFlowConfiguration.trigger_authorization_result_event = true;
