@@ -7,11 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdSrv4", "IdSrv4\IdSrv4.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OidcClient", "OidcClient\OidcClient.csproj", "{CF216FAD-0719-4D01-A4E4-27C6299B8198}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApi", "SampleApi\SampleApi.csproj", "{D35692C0-E34A-42FC-A052-7B033B6E328F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApi", "SampleApi\SampleApi.csproj", "{D35692C0-E34A-42FC-A052-7B033B6E328F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Constants", "Constants\Constants.csproj", "{5925D76E-9E98-4940-9A2D-93978D0A3006}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Constants", "Constants\Constants.csproj", "{5925D76E-9E98-4940-9A2D-93978D0A3006}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClientCredentialsFlow", "ConsoleClientCredentialsFlow\ConsoleClientCredentialsFlow.csproj", "{76426671-2B56-47DB-87CD-768FF8A963DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClientCredentialsFlow", "ConsoleClientCredentialsFlow\ConsoleClientCredentialsFlow.csproj", "{76426671-2B56-47DB-87CD-768FF8A963DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceOwnerPasswordsClient", "ResourceOwnerPasswordsClient\ResourceOwnerPasswordsClient.csproj", "{C1607D24-1D2C-4396-9E0F-EF8B1879FA52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcClient", "MvcClient\MvcClient.csproj", "{72D7B980-02EF-4B52-B08B-934D99E0D1B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{76426671-2B56-47DB-87CD-768FF8A963DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76426671-2B56-47DB-87CD-768FF8A963DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76426671-2B56-47DB-87CD-768FF8A963DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1607D24-1D2C-4396-9E0F-EF8B1879FA52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1607D24-1D2C-4396-9E0F-EF8B1879FA52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1607D24-1D2C-4396-9E0F-EF8B1879FA52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1607D24-1D2C-4396-9E0F-EF8B1879FA52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72D7B980-02EF-4B52-B08B-934D99E0D1B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72D7B980-02EF-4B52-B08B-934D99E0D1B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72D7B980-02EF-4B52-B08B-934D99E0D1B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72D7B980-02EF-4B52-B08B-934D99E0D1B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

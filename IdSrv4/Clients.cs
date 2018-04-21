@@ -18,6 +18,45 @@ namespace IdSrv4
                     },
                     AllowedScopes = { "api1" }
                 },
+            new Client
+            {
+                ClientId = "ro.client",
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },AllowedScopes = {"api1"}
+            },
+            new Client{
+                ClientId = "mvc",
+                ClientName ="MVC Client",
+                AllowedGrantTypes = GrantTypes.Implicit,
+                RedirectUris = {"http://localhost:5002/signin-oidc"},
+                PostLogoutRedirectUris = {"http://localhost:5002/signout-callback-oidc"},
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile
+                }
+            },
+                new Client{
+                ClientId = "mvchybrid",
+                ClientName ="MVC Hybrid Client",
+                AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },
+                RedirectUris = {"http://localhost:5002/signin-oidc"},
+                PostLogoutRedirectUris = {"http://localhost:5002/signout-callback-oidc"},
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "api1"
+                },
+                AllowOfflineAccess = true
+            },
                 new Client {
                     ClientId = "oauthClient",
                     ClientName = "Example Client Credentials Client Application",

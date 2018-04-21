@@ -24,6 +24,18 @@ namespace IdSrv4
                         new Claim(JwtClaimTypes.Email, "admin@example.com"),
                         new Claim(JwtClaimTypes.Role, "admin")
 }
+                },
+                 new TestUser
+                {
+                    SubjectId = "1",
+                    Username = "alice",
+                    Password = "password"
+                },
+                new TestUser
+                {
+                    SubjectId = "2",
+                    Username = "bob",
+                    Password = "password"
                 }
             };
         }
